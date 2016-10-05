@@ -1,0 +1,157 @@
+*{
+    font-family: 'MTG Sans',Helvetica,Arial,sans-serif;
+    color: #c0c1c4;   
+    font-weight:normal;
+}
+body{
+    background-color: #0f161a;
+}
+.movieHeader{
+    padding: 5px 0 0 100px;
+}
+.headerImg{
+    padding: 0 0 20px 0;
+}
+.movieHeaderBackground{    
+    background-repeat: no-repeat;    
+    background-position-x: 207px;    
+    height:500px;     
+    -webkit-box-shadow: inset 74px -91px 300px 200px rgba(15,22,26,0.99);
+    -moz-box-shadow: inset 74px -91px 300px 200px rgba(15,22,26,0.99);
+    box-shadow: inset 74px -91px 300px 200px rgba(15,22,26,0.99);
+}
+.movieTitle{
+    font-size: 4.4rem;
+    font-weight: 300;
+    color: #f9f9fb
+}
+.container{
+
+}
+.summary{
+    font-size: 2rem;
+    line-height: 2.6rem;
+    font-weight: 300;
+    color: #c0c1c4;
+    /*border: 5px solid red;*/
+}
+.flags{
+    white-space: nowrap;
+    line-height: 2.6rem;
+    font-size: 0;
+}
+.flag{
+    text-transform: uppercase;
+    display: inline-block;
+    border-radius: 2px;
+    border: 1px solid #c0c1c4;
+    background-color: rgba(0,0,0,.15);
+    color: #dcddde;
+    text-align: center;
+    width: auto;
+    height: 18px;
+    font-size: 1.2rem;
+    line-height: 19px;
+    font-weight: 300;
+    position: relative;
+    margin: 0 8px 0 0;
+    padding: 0 10px;
+}
+.middleBlock{
+    width: 540px;
+    border-color: rgba(255,255,255,.2);
+    border-width: 1px 0;
+    border-style: solid;
+    padding: 15px 0;
+    height: 55px;
+}
+.imdbSym{
+    content: " ";
+    display: block;
+    pointer-events: none;
+    background-image: url(https://assets.viaplay.tv/frontend-2016092701/images/imdb.svg);
+    background-repeat: no-repeat;
+    background-position: 0;
+    background-size: 37px 18px;
+    width: 45px;
+    height: 22px;
+    float: left;
+}
+.imdbLink{
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+.imdbDesc{
+    font-weight: normal;
+}
+.imgPoster{
+    width: 140px;
+    height: 210px;
+    -webkit-box-shadow: inset 31px -55px 300px 200px rgba(15,22,26,0.99);
+    -moz-box-shadow: inset 31px -55px 300px 200px rgba(15,22,26,0.99);
+    box-shadow: inset 31px -55px 300px 200px rgba(15,22,26,0.99);
+
+}
+.movieDetail{
+    font-size: 1.6rem;
+    line-height: 2.2rem;
+    font-weight: 300;
+    margin: 10px 0 0 0;
+}
+.col-sm-2{
+    padding-left: 0px;
+}
+.btn{
+    padding: 6px 0px;
+}
+.play-link{
+    border: 2px solid #73AD21;
+    width: 168px;
+    height: 168px;
+    left: -32px;
+    top: -33px;
+    opacity: 0;
+    background-image: url(https://assets.viaplay.tv/frontend-2016092904/images/play_button_hover.svg);
+}
+.col-xs-2{
+    width: 186px;
+    margin: 0 5px 5px 0;
+}
+.table > thead > tr > th {
+    border-bottom: none;
+}
+.similerMovie{
+    font-size:30px;    
+    margin:0 0 0 15px;
+}
+.actor{
+    float: left;
+}
+.actorDiv{
+    margin: 10px 0 0 0;
+}
+.actorName{
+    float:left;
+    margin-right: 5px;
+}
+.directorDiv{
+    margin-top: -100px;
+}
+.similerMovieImg{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+.similerMovieImg:hover:before {    
+    content: url(https://assets.viaplay.tv/frontend-2016093003/images/play_button_hover.svg);
+    height:68px;
+    width:68px;
+    display: block;
+    position: absolute;
+    top: 40%;
+    left: 30%;
+}
+.navbar-default{
+    background-color: #212d33;
+    border-color: #212d33;
+}
