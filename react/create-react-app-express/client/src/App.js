@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css'
-import Everything from './components/Everything';
+import ShowUser from './components/ShowUser';
 
 function App() {
   return (
     <div className="App">
-      <Everything />
+      <ShowUser />
     </div>
   );
 }

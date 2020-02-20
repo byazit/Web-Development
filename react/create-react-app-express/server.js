@@ -23,6 +23,7 @@ var dbOptions = {
 app.use(myConnection(mysql, dbOptions, 'pool'))
 var index = require('./routes/index')
 var users = require('./routes/users')
+var apitest = require('./routes/apitest')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -55,7 +56,7 @@ app.post('/api/world', (req, res) => {
     `I received your POST request. This is what you sent me: ${req.body.name+req.body.email}`,
   );
 });
-app.set('views', path.join(__dirname, './src/components')); 
-app.use('/users', users)
-
+app.set('components', path.join(__dirname, './src')); 
+app.use('/users', users);
+app.use('/apitest', apitest);  
 app.listen(port, () => console.log(`Listening on port ${port}`));
