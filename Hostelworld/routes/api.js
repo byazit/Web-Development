@@ -7,66 +7,96 @@ const Route = require('../models').Route;
 const { Op, Sequelize, JSONB, where } = require("sequelize");
 
 router.get('/country/:nameId/routes', function (req, res) {
+
     if (!req.params.nameId) {
         return res.json({ success: false, data: { message: 'Missing parameter' } });
     } else {
-        City.hasMany(Airport, { foreignKey: 'id' });
-        Airport.belongsTo(City, { foreignKey: 'cityId' });
 
-        Country.hasMany(City, { foreignKey: 'id' });
+        Country.hasMany(Airport, { foreignKey: 'countryId', });
+        Airport.hasMany(Route, { foreignKey: 'destiny', sourceKey: 'airportName' });
+        Route.belongsTo(Airport, { foreignKey: 'origin', targetKey: 'airportName' });
+        Airport.belongsTo(City, { foreignKey: 'cityId' });
         City.belongsTo(Country, { foreignKey: 'countryId' });
 
         const myData = [];
 
-        Airport
+        Country
             .findAll({
                 raw: true,
                 where: {
-                    id: {
-                        [Op.ne]: null
-                    }
+                    countryName: { [Op.ne]: req.params.nameId },
+                    id: { [Op.ne]: isNaN(req.params.nameId) == false ? req.params.nameId : "" }, //check if it's an integer                    
                 },
                 attributes: [
-                    ['id', 'airportId'],
-                    'cityId'
+                    //'id',
+                    'countryName',
                 ],
                 include: [{
-                    model: City,
+                    model: Airport,
                     where: {
                         id: {
                             [Op.ne]: null
                         }
                     },
                     attributes: [
-                        'cityName'
+                        /* 'id',
+                        'cityId',
+                        'airportName' */
                     ],
                     include: [{
-                        model: Country,
+                        model: Route,
                         where: {
-                            [Op.or]: {
-                                countryName: req.params.nameId,
-                                id: req.params.nameId
-                            }
+                            id: {
+                                [Op.ne]: null
+                            },
                         },
-                        attributes: ['countryName'],
+                        attributes: [
+                            /* 'origin',
+                            'destiny' */
+                        ],
+                        include: [{
+                            model: Airport,
+                            where: {
+                                id: {
+                                    [Op.ne]: null
+                                }
+                            },
+                            attributes: [],
+                            include: [{
+                                model: City,
+                                where: {
+                                    id: {
+                                        [Op.ne]: null
+                                    }
+                                },
+                                attributes: [
+                                    //'cityName'
+                                ],
+                                include: [{
+                                    model: Country,
+                                    where: {
+                                        [Op.or]: {
+                                            countryName: req.params.nameId,
+                                            id: isNaN(req.params.nameId) == false ? req.params.nameId : "" //check if it's an integer
+                                        }
+                                    },
+                                    attributes: [
+                                        //'countryName'
+                                    ],
+                                }],
+                            }],
+                        }],
                     }],
-                }],
+                }]
             })
             .then((airports) => {
-                if(airports.length>0){
-                    for (let i = 0; i < airports.length; i++) {
-                        myData[i] = {
-                            airportId: airports[i].airportId,
-                            cityId: airports[i].cityId,
-                            cityName: airports[i]['City.cityName'],
-                            countryName: airports[i]['City.Country.countryName'],
-                        }
-                    }
-                    res.json({ success: true, data: myData });
-                }else{
-                    res.json({ sucess: false,data: null,message: 'Invalid Country ID or Name' });
+                if (airports.length > 0) {
+                    res.json({ success: true, data: airports });
+                } else {
+                    res.json({ sucess: false, data: null, message: 'Invalid Country ID or Name' });
                 }
             })
+            .catch((error) => res.status(400).send({ success: false,data: null, message: error }));
     }
 })
 

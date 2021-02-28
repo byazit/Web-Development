@@ -22,7 +22,7 @@ app.use(morgan('dev'));
 });*/
 
 app.use('/', indexRouter);
-app.use('/api/v2', apiRouter);
+app.use('/', apiRouter);
 
 // Run server
 app.set('port', process.env.PORT || 8081);

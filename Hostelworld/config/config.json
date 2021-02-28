@@ -3,7 +3,7 @@
     "username": "appuser",
     "password": "apppassword",
     "database": "symfony",
-    "host": "192.168.1.117",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "test": {
