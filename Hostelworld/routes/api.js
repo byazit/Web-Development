@@ -18,8 +18,6 @@ router.get('/country/:nameId/routes', function (req, res) {
         Airport.belongsTo(City, { foreignKey: 'cityId' });
         City.belongsTo(Country, { foreignKey: 'countryId' });
 
-        const myData = [];
-
         Country
             .findAll({
                 raw: true,
@@ -90,13 +88,15 @@ router.get('/country/:nameId/routes', function (req, res) {
                 }]
             })
             .then((airports) => {
-                if (airports.length > 0) {
-                    res.json({ success: true, data: airports });
+                if (airports.length > 0) {                    
+                    let clean = airports.filter((airports, index, self) =>
+                        index === self.findIndex((t) => (t.countryName === airports.countryName)));//removing duplicate country
+                    res.json({ success: true, data: clean });
                 } else {
                     res.json({ sucess: false, data: null, message: 'Invalid Country ID or Name' });
                 }
             })
-            .catch((error) => res.status(400).send({ success: false,data: null, message: error }));
+            .catch((error) => res.status(400).send({ success: false, data: null, message: error }));
     }
 })
 
