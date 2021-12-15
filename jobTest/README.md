@@ -12,8 +12,7 @@
 1. Set URL
 	* ```http://yourIp/api/v2/addMessage```
 1. For creating new message, use POST method and choose Body->raw->JSON
-	* 
-	```
+	* ```
 	{
 		"name":"testTwo",
     	"message":"my message"
