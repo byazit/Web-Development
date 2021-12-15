@@ -7,6 +7,7 @@ const router = express.Router();
 require('../config/passport')(passport);
 const Message = require('../models').Message;
 const Log = require('../models').Log;
+const MaxAge = require('../models').MaxAge;
 
 const uuid = require('uuid'); //generate time based random number
 const path = require("path");
@@ -14,8 +15,74 @@ const fs = require("fs");
 const { Op } = require("sequelize");
 const { get } = require('http');
 
-router.get('/getLog', function (req, res) {
-    
+router.post('/maxAge', function (req, res) {//set max age limit
+    if (!req.body.limit) {
+        res.status(400).send({ success: false, msg: 'Please fill maximum age limit!' })
+    } else {
+        maxLimit = MaxAge.findAll({//preventing multiple maxAge
+            where: {
+
+            }
+        })
+            .then((maxLimit) => {
+                if (maxLimit.length == 0) {
+                    MaxAge.create({
+                        id: uuid.v1(),
+                        maxAge: req.body.limit
+                    })
+                        .then((maxAge) => { res.status(201).send({ success: true, msg: maxAge }) })
+                        .catch((error) => res.status(400).send({ success: false, msg: error }));
+                } else {
+                    res.status(400).send({ success: false, msg: "Not allowed to create multiple max age!" })
+                }
+            })
+    }
+})
+router.put('/updateMaxAge', function (req, res) {//set max age limit
+    if (!req.body.limit) {
+        res.status(400).send({ success: false, msg: 'Please fill maximum age limit!' })
+    } else {
+        MaxAge.update({
+            maxAge: req.body.limit
+        },
+            {
+                returning: true, where: {}
+            })
+            .then((maxAge) => {
+                if (maxAge[0] > 0) {
+                    res.status(201).send({ success: true, msg: maxAge })
+                } else {
+                    res.status(400).send({ success: false, msg: "No max age created yet!" })
+                }
+            })
+            .catch((error) => res.status(400).send({ success: false, msg: error }));
+    }
+})
+
+router.get('/getMaxAge', function (req, res) {//getting max age
+    MaxAge.findOne({
+        where: {
+
+        }
+    })
+        .then((maxAge) => {
+            if (maxAge) {
+                res.status(200).send({ success: true, msg: maxAge })
+            } else {
+                res.status(400).send({ success: false, msg: "No max age created yet!" })
+            }
+        })
+        .catch((error) => res.status(400).send({ success: false, msg: error }))
+})
+
+router.get('/getLog', function (req, res) {//get all logs
+    Log.findAll({
+        where: {
+
+        }
+    })
+        .then((logs) => { res.status(200).send({ success: true, msg: logs }) })
+        .catch((error) => res.status(400).send({ success: false, msg: error }))
 })
 
 router.post('/addMessage', function (req, res) { //create message
@@ -23,8 +90,38 @@ router.post('/addMessage', function (req, res) { //create message
     if (!req.body.name || !req.body.message) {
         res.status(400).send({ success: false, msg: 'Please fill in all the required fields!' })
     } else {
-        log = Log.create({// we could remove this and put it in a new function with await->async!
+        let logId = 0
+        Log.findOne({//checking if old log exist
+            where: {
+                createdAt: { [Op.lt]: new Date() }
+            }
+        })
+            .then((logOld) => {                
+                if (logOld) {
+                    logId = logOld.id
+                } else { // old log does not exist, create new log
+                    Log.create({// we could remove this and put it in a new function with await->async!
 
+                    })
+                        .then(newLog => {
+                            logId=newLog.id
+                        })
+                }
+                Message.create({
+                    id: uuid.v1(),
+                    name: req.body.name,
+                    logId: logId,
+                    message: req.body.message
+                })
+                    .then((message) => res.status(201).send({ success: true, msg: message }))
+                    .catch((error) => res.status(400).send({ success: false, msg: error }));
+            })
+            .catch((error) => res.status(400).send({ success: false, msg: error }));
+
+        /* log = Log.create({// we could remove this and put it in a new function with await->async!
+            where:{
+                createdAt:{[Op.gte]:new Date()}
+            }
         })
             .then((log) => {
                 Message.create({
@@ -36,7 +133,7 @@ router.post('/addMessage', function (req, res) { //create message
                     .then((message) => res.status(201).send({ success: true, msg: message }))
                     .catch((error) => res.status(400).send({ success: false, msg: error }));
             })
-            .catch((error) => res.status(400).send({ success: false, msg: error }));
+            .catch((error) => res.status(400).send({ success: false, msg: error })); */
 
     }
 })
@@ -66,17 +163,17 @@ router.get('/set_max_age/:second', function (req, res) {
         //console.log(removeMySec)
         Log.findAll({
             where: {
-                createdAt:{ [Op.gte]:removeMySec }
+                createdAt: { [Op.gte]: removeMySec }
             }
         })
-        .then((log) => {
-            if (log.length > 0) {
-                res.status(200).send({ success: true, msg: log })
-            } else {
-                res.status(400).send({ success: false, msg: "No log found!" })
-            }
-        })
-        .catch((error) => res.status(400).send({ success: false, msg: error }))
+            .then((log) => {
+                if (log.length > 0) {
+                    res.status(200).send({ success: true, msg: log })
+                } else {
+                    res.status(400).send({ success: false, msg: "No log found!" })
+                }
+            })
+            .catch((error) => res.status(400).send({ success: false, msg: error }))
     }
 })
 
