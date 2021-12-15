@@ -3,7 +3,7 @@
     "username": "test",
     "password": "test1234abcd",
     "database": "test01",
-    "host": "192.168.1.4",
+    "host": "192.168.1.6",
     "dialect": "postgres",
     "logging": false
   },
