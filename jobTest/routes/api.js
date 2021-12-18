@@ -66,6 +66,7 @@ router.get('/getMaxAge', function (req, res) {//getting max age
         }
     })
         .then((maxAge) => {
+            console.log(maxAge)
             if (maxAge) {
                 res.status(200).send({ success: true, msg: maxAge })
             } else {
@@ -161,7 +162,7 @@ router.get('/set_max_age/:second', function (req, res) {
         const currentTime = Math.floor(new Date().getTime() / 1000);
         const removeMySec = new Date((currentTime - req.params.second) * 1000).toISOString();
         //console.log(removeMySec)
-        let allMessage=[]
+        let allMessage = []
         Log.findAll({
             where: {
                 createdAt: { [Op.gte]: removeMySec }
@@ -169,19 +170,19 @@ router.get('/set_max_age/:second', function (req, res) {
         })
             .then((log) => {
                 if (log.length > 0) {
-                    for(let i=0;i<log.length;i++){
+                    for (let i = 0; i < log.length; i++) {
                         Message.findAll({
-                            where:{
-                                logId:log[i].id
+                            where: {
+                                logId: log[i].id
                             }
                         })
-                        .then(msg=>{
-                            if(msg.length>0){
-                                allMessage.push(msg);
-                            }
-                            res.status(200).send({ success: true, msg: allMessage })
-                        })                        
-                    }                                    
+                            .then(msg => {
+                                if (msg.length > 0) {
+                                    allMessage.push(msg);
+                                }
+                                res.status(200).send({ success: true, msg: allMessage })
+                            })
+                    }
                 } else {
                     res.status(400).send({ success: false, msg: "No log found!" })
                 }
@@ -191,21 +192,24 @@ router.get('/set_max_age/:second', function (req, res) {
 })
 
 router.delete('/removeMsg', function (req, res) { //
-    if (!req.body.second) {
-        res.status(400).send({ success: false, msg: 'Missing second!' })
-    } else {
-        const currentTime = Math.floor(new Date().getTime() / 1000);
-        const removeMySec = new Date((currentTime - req.params.second) * 1000).toISOString();
-        Message
-            .destroy({
-                returning: true, 
-                where: { 
-                    createdAt: { [Op.gte]: removeMySec }
-                }
-            })
-            .then((removeMsg) => res.status(200).send({ success: true, msg: "Successfully deleted!" }))
-            .catch((error) => res.status(400).send(error));
-    }
+
+    MaxAge.findOne({
+
+    })
+        .then(second => {
+            const currentTime = Math.floor(new Date().getTime() / 1000);
+            const removeMySec = new Date((currentTime - second.maxAge) * 1000).toISOString();
+            Message
+                .destroy({
+                    returning: true,
+                    where: {
+                        createdAt: { [Op.lte]: removeMySec }
+                    }
+                })
+                .then((removeMsg) => res.status(200).send({ success: true, msg: "Successfully deleted!" }))
+                .catch((error) => res.status(400).send(error));
+        })
+
 })
 
 

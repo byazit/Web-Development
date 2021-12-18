@@ -30,6 +30,8 @@
     	"message":"my message"
 	}
 	```	
+1. For removing message use this URL as DELETE method, 2000 as second. It will remove all the message older than maxAge which is for crontab
+	* ```http://yourMachineIp/api/v2/removeMsg```	
 1. Every new message will check current date to find existing log, if no log found. It will create new log. Per day 1 log, contain several message.
 1. Rest method under /set_max_age that takes an integer describing the number of seconds log messages, use GET method and URL
 	* ```http://yourMachineIp/api/v2/set_max_age/120```
